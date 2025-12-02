@@ -15,9 +15,9 @@ Imagina un profesor lanzando preguntas en una pantalla grande (el "Host") mientr
 * **🏆 Podio y Puntuación:** El sistema calcula puntos automáticamente y muestra los ganadores al final de cada partida.
 * **🎨 Diseño al Estilo Neón:** Disfruta de una interfaz moderna y vibrante inspirada en la estética cyberpunk.
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 🚀 ¡Manos a la Obra! ¿Cómo empezar?
 
@@ -50,9 +50,9 @@ XAMPP es un programa que te da un servidor web y de base de datos MySQL en tu pr
     * ✅ **MySQL** (el gestor de base de datos)
 * **¡Inícialos!** Abre el "Panel de Control de XAMPP" y haz clic en "Start" junto a **Apache** y **MySQL**. Cuando estén activos, sus nombres se pondrán en verde.
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 🗄️ Configuración de la Base de Datos (Dónde se guarda todo)
 
@@ -155,9 +155,9 @@ Así es como tu aplicación se conectará a la base de datos en tu computadora (
 * **Contraseña:** (vacía por defecto)
 * **Puerto:** `3306`
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 📂 Estructura del Proyecto (¿Qué hay dentro?)
 
@@ -187,9 +187,9 @@ game-live/                 <-- Carpeta principal del proyecto
 └── README.md              <-- Este mismo archivo que estás leyendo :)
 ```
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 📦 ¡Instala y Corre la Aplicación!
 
@@ -225,9 +225,9 @@ game-live/                 <-- Carpeta principal del proyecto
     * Press CTRL+C to quit
     ```
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 🌐 ¡A Jugar! (Verificar el funcionamiento)
 
@@ -246,15 +246,17 @@ game-live/                 <-- Carpeta principal del proyecto
 
 7.  **Cierra Sesión:** Cuando termines, no olvides cerrar tu sesión.
 
-  <picture>
-    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
-  </picture>
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 ## 🌟 ¡Disfruta de tu creación!
 
 ¡Felicidades por completar este proyecto! Espero que GAME LIVE te sea muy útil para tus sesiones de preguntas. Si tienes alguna duda o sugerencia, no dudes en contactar.
 
----
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
 
 **Desarrollado por:** JaviTMX
 **Versión:** 1.0.0
