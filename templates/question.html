@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kahoot Live - Pregunta</title>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div id="feedbackOverlay" class="modal-overlay">
+      <div
+        id="modalCorrecto"
+        class="modal-content-box modal-neon-green"
+        style="display: none"
+      >
+        <span class="material-icons-outlined modal-icon neon-text-green"
+          >check_circle</span
+        >
+        <div class="feedback-text">¡Correcto!</div>
+        <div id="puntosGanadosModal" class="feedback-subtext neon-text-green">
+          +0 pts
+        </div>
+      </div>
+
+      <div
+        id="modalIncorrecto"
+        class="modal-content-box modal-neon-red"
+        style="display: none"
+      >
+        <span class="material-icons-outlined modal-icon neon-text-red"
+          >cancel</span
+        >
+        <div class="feedback-text">Incorrecto</div>
+        <div class="feedback-subtext">¡Suerte en la próxima!</div>
+      </div>
+
+      <div
+        id="modalTiempo"
+        class="modal-content-box modal-neon-red"
+        style="display: none"
+      >
+        <span class="material-icons-outlined modal-icon neon-text-red"
+          >timer_off</span
+        >
+        <div class="feedback-text">¡Tiempo Agotado!</div>
+        <div class="feedback-subtext">Fuiste muy lento...</div>
+      </div>
+    </div>
+    <div class="container-full" style="padding-bottom: 100px">
+      <div class="question-header">
+        <button
+          onclick="window.location.href='/'"
+          style="
+            background: none;
+            border: none;
+            color: #ff073a;
+            font-size: 1.5rem;
+            cursor: pointer;
+          "
+        >
+          ✕
+        </button>
+        <span class="question-number"
+          >Pregunta {{ numero_pregunta }}/{{ total_preguntas }}</span
+        >
+        <span id="puntajeTotalJugador" class="neon-yellow"
+          >{{ jugador.puntaje }} pts</span
+        >
+      </div>
+
+      <div class="timer-container">
+        <div class="timer-circle" id="timer">{{ tiempo_restante }}</div>
+      </div>
+
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          id="progress"
+          style="--progress-width: {{ (tiempo_restante / 20) * 100 }}%;"
+        ></div>
+      </div>
+
+      <div class="question-text">{{ pregunta.texto }}</div>
+
+      {% if pregunta.imagen_url %}
+      <div style="text-align: center; margin-bottom: 20px">
+        <img
+          src="{{ pregunta.imagen_url }}"
+          alt="Imagen de la pregunta"
+          style="
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 15px;
+            border: 2px solid #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+          "
+        />
+      </div>
+      {% endif %}
+
+      <div id="response-sent" class="response-sent" style="display: none">
+        <div style="font-size: 4rem; margin-bottom: 20px">⏳</div>
+        <p class="neon-blue" style="font-size: 1.5rem">Esperando...</p>
+        <p style="color: #888; margin-top: 10px">
+          El profesor está a punto de mostrar los resultados.
+        </p>
+      </div>
+
+      <div
+        class="options-grid"
+        id="options-container"
+        {%
+        if
+        ya_respondio
+        %}style="display: none;"
+        {%
+        endif
+        %}
+      >
+        {% set colores = ['option-red', 'option-blue', 'option-yellow',
+        'option-green'] %} {% set simbolos = ['△', '◆', '○', '□'] %} {% for
+        opcion in opciones %}
+        <button
+          class="option-btn {{ colores[loop.index0 % 4] }}"
+          data-opcion-id="{{ opcion.id }}"
+          onclick="seleccionarRespuesta(this, {{ opcion.id }})"
+          {%
+          if
+          ya_respondio
+          %}disabled{%
+          endif
+          %}
+        >
+          <span style="font-size: 1.5rem">{{ simbolos[loop.index0 % 4] }}</span>
+          {{ opcion.texto }}
+        </button>
+        {% endfor %}
+      </div>
+
+      {% if ya_respondio %}
+      <div class="response-sent">
+        <div style="font-size: 4rem; margin-bottom: 20px">⏳</div>
+        <p class="neon-blue" style="font-size: 1.5rem">
+          Ya respondiste esta pregunta
+        </p>
+        <p style="color: #888; margin-top: 10px">Esperando resultados...</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="footer-bar">
+      <div style="display: flex; align-items: center">
+        <div
+          class="player-avatar"
+          style="width: 35px; height: 35px; margin-right: 10px"
+        ></div>
+        <span>{{ jugador.nombre }}</span>
+      </div>
+      <span id="puntajeFooterJugador" class="neon-yellow"
+        >{{ jugador.puntaje }} pts</span
+      >
+    </div>
+
+    <audio id="countdown-audio" loop>
+      <source
+        src="{{ url_for('static', filename='sounds/countdown.mp3') }}"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script>
+      let tiempoRestante = {{ tiempo_restante|tojson }};
+      const tiempoLimite = 20;
+      const preguntaId = {{ pregunta.id|tojson }};
+      let respondido = {{ ya_respondio|tojson }};
+      let tiempoInicio = Date.now();
+      const numeroPreguntaActual = {{ (numero_pregunta - 1)|tojson }};
+      let puntajeActualJugador = {{ jugador.puntaje|tojson }};
+
+      // Elementos DOM
+      const timerEl = document.getElementById('timer');
+      const progressEl = document.getElementById('progress');
+      const optionsContainer = document.getElementById('options-container');
+      const responseSent = document.getElementById('response-sent');
+
+      // NUEVOS Elementos de Modales
+      const feedbackOverlay = document.getElementById('feedbackOverlay');
+      const modalCorrecto = document.getElementById('modalCorrecto');
+      const modalIncorrecto = document.getElementById('modalIncorrecto');
+      const modalTiempo = document.getElementById('modalTiempo');
+      const puntosGanadosModal = document.getElementById('puntosGanadosModal');
+      const puntajeTotalJugadorEl = document.getElementById('puntajeTotalJugador');
+      const puntajeFooterJugadorEl = document.getElementById('puntajeFooterJugador');
+
+      try {
+          const audio = document.getElementById('countdown-audio');
+          // audio.play();
+      } catch(e) {}
+
+      const timerInterval = setInterval(function() {
+          if (tiempoRestante > 0 && !respondido) {
+              tiempoRestante--;
+              timerEl.textContent = tiempoRestante;
+              progressEl.style.setProperty('--progress-width', (tiempoRestante / tiempoLimite * 100) + '%');
+              if (tiempoRestante <= 5) timerEl.classList.add('warning');
+          } else if (tiempoRestante <= 0 && !respondido) {
+              clearInterval(timerInterval);
+              mostrarTiempoAgotado();
+          }
+      }, 1000);
+
+      function seleccionarRespuesta(btn, opcionId) {
+          if (respondido) return;
+          respondido = true;
+          clearInterval(timerInterval);
+          const tiempoRespuesta = (Date.now() - tiempoInicio) / 1000;
+          btn.classList.add('option-selected-confirm');
+          document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+
+          fetch('/responder', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ pregunta_id: preguntaId, opcion_id: opcionId, tiempo_respuesta: tiempoRespuesta })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.success) {
+                  optionsContainer.style.display = 'none';
+                  if (data.es_correcta) {
+                      puntosGanadosModal.innerText = "+" + data.puntos_ganados + " pts";
+                      puntajeActualJugador += data.puntos_ganados;
+                      puntajeTotalJugadorEl.textContent = puntajeActualJugador + " pts";
+                      puntajeFooterJugadorEl.textContent = puntajeActualJugador + " pts";
+                      // Mostrar modal Correcto
+                      mostrarModal(modalCorrecto);
+                  } else {
+                      // Mostrar modal Incorrecto
+                      mostrarModal(modalIncorrecto);
+                  }
+              } else {
+                  alert('Error: ' + data.error);
+              }
+          })
+          .catch(err => { console.error('Error:', err); });
+      }
+
+      // NUEVA Función para manejar la visualización de los modales
+      function mostrarModal(modalElement) {
+          // 1. Mostrar el overlay y el modal específico
+          feedbackOverlay.style.display = 'flex';
+          modalElement.style.display = 'block';
+
+          // 2. Esperar 3 segundos
+          setTimeout(() => {
+              // 3. Ocultar todo y mostrar pantalla de espera
+              feedbackOverlay.style.display = 'none';
+              modalElement.style.display = 'none';
+              responseSent.style.display = 'block';
+          }, 3000); // 3 segundos de pop-up
+      }
+
+      function mostrarTiempoAgotado() {
+          respondido = true;
+          optionsContainer.style.display = 'none';
+          // Mostrar modal de Tiempo Agotado
+          mostrarModal(modalTiempo);
+      }
+
+      setInterval(function() {
+          fetch('/api/estado-juego')
+              .then(response => response.json())
+              .then(data => {
+                  if (data.estado === 'finalizado') {
+                      window.location.href = '/podio';
+                  } else if (data.estado === 'jugando' && data.pregunta_actual !== numeroPreguntaActual) {
+                      window.location.reload();
+                  }
+              }).catch(err => {});
+      }, 2000);
+    </script>
+  </body>
+</html>

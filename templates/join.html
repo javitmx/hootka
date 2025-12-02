@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kahoot Live - Unirse</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div
+      class="container"
+      style="
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100vh;
+      "
+    >
+      <!-- Efectos de fondo -->
+      <div
+        style="
+          position: fixed;
+          top: 50px;
+          left: 50px;
+          width: 200px;
+          height: 200px;
+          background: #ff00ff;
+          filter: blur(100px);
+          opacity: 0.2;
+          pointer-events: none;
+        "
+      ></div>
+      <div
+        style="
+          position: fixed;
+          bottom: 50px;
+          right: 50px;
+          width: 250px;
+          height: 250px;
+          background: #00f0ff;
+          filter: blur(100px);
+          opacity: 0.2;
+          pointer-events: none;
+        "
+      ></div>
+
+      <!-- Título -->
+      <h1 class="title">⚡ KAHOOT LIVE ⚡</h1>
+      <div style="text-align: center">
+        <p class="subtitle">🎮 ¡Únete a la diversión!</p>
+      </div>
+      <!-- Mensaje de error si existe -->
+      {% if error %}
+      <div class="error-message">{{ error }}</div>
+      {% endif %}
+
+      <!-- Formulario -->
+      <form
+        action="{{ url_for('unirse') }}"
+        method="POST"
+        style="max-width: 400px; margin: 0 auto; width: 100%"
+      >
+        <div class="input-group">
+          <label for="pin">GAME PIN</label>
+          <input
+            type="text"
+            id="pin"
+            name="pin"
+            class="input-neon"
+            placeholder="Ingresa el PIN del juego"
+            required
+            autocomplete="off"
+            maxlength="10"
+          />
+        </div>
+
+        <div class="input-group">
+          <label
+            for="nombre"
+            style="color: #00f0ff; text-shadow: 0 0 5px #00f0ff"
+            >TU NOMBRE (APELLIDO)</label
+          >
+          <input
+            type="text"
+            id="nombre"
+            name="nombre"
+            class="input-neon"
+            style="
+              border-color: #00f0ff;
+              box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            "
+            placeholder="Ingresa Un Alias"
+            required
+            autocomplete="off"
+            maxlength="20"
+          />
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 20px">
+          🚀 UNIRSE AL JUEGO
+        </button>
+      </form>
+
+      <!-- Instrucciones -->
+      <div style="text-align: center; margin-top: 40px; color: #888">
+        <p>1️⃣ Pide el PIN al profesor</p>
+        <p>2️⃣ Ingresa un Alias</p>
+        <p>3️⃣ ¡Responde rápido para ganar más puntos!</p>
+      </div>
+    </div>
+  </body>
+</html>

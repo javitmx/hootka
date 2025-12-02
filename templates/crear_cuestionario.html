@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Crear Cuestionario - Game Live</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <style>
+      /* Estilos Neón Personalizados */
+      .neon-glow {
+        box-shadow: 0 0 5px var(--tw-shadow-color),
+          0 0 10px var(--tw-shadow-color), 0 0 15px var(--tw-shadow-color);
+      }
+      .text-glow {
+        text-shadow: 0 0 5px var(--tw-shadow-color),
+          0 0 8px var(--tw-shadow-color);
+      }
+      .btn-glow {
+        box-shadow: 0 0 8px var(--tw-shadow-color),
+          0 0 16px var(--tw-shadow-color);
+        transition: all 0.3s ease;
+      }
+      .btn-glow:hover {
+        box-shadow: 0 0 12px var(--tw-shadow-color),
+          0 0 24px var(--tw-shadow-color);
+      }
+      .form-select:focus,
+      .form-input:focus,
+      .form-textarea:focus {
+        --tw-ring-color: var(--focus-color, #f87171) !important;
+        border-color: var(--focus-color, #f87171) !important;
+      }
+      /* Animaciones para el panel derecho */
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .animate-slide-in {
+        animation: slideIn 0.3s ease-out forwards;
+      }
+      /* Estilos para scrollbar personalizado */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.5);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(217, 70, 239, 0.3);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(217, 70, 239, 0.5);
+      }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                DEFAULT: "#d946ef",
+                light: "#f5d0fe",
+                dark: "#a21caf",
+              },
+              secondary: "#38bdf8",
+              success: "#10b981",
+              danger: "#ef4444",
+              "background-light": "#f3f4f6",
+              "background-dark": "#020617",
+            },
+            fontFamily: { display: ["Roboto", "sans-serif"] },
+            borderRadius: { DEFAULT: "0.75rem" },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body
+    class="bg-background-light dark:bg-background-dark font-display text-gray-800 dark:text-gray-200"
+  >
+    <div class="min-h-screen flex flex-col p-4 sm:p-6">
+      <header class="flex justify-between items-center mb-6">
+        <div class="flex items-center gap-3">
+          <span
+            class="material-icons-outlined text-4xl text-primary text-glow"
+            style="--tw-shadow-color: #d946ef"
+            >bolt</span
+          >
+          <h1 class="text-2xl font-bold tracking-wider text-white">
+            Crear Cuestionario
+          </h1>
+          <span
+            class="material-icons-outlined text-4xl text-primary text-glow"
+            style="--tw-shadow-color: #d946ef"
+            >bolt</span
+          >
+        </div>
+        <a
+          href="{{ url_for('logout') }}"
+          class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-md border border-danger text-danger hover:bg-danger/10 transition-colors cursor-pointer text-decoration-none"
+        >
+          <span class="material-icons-outlined text-base">logout</span>
+          <span>Salir</span>
+        </a>
+      </header>
+
+      <main class="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section class="lg:col-span-2 flex flex-col gap-6">
+          <div id="step1">
+            <label
+              class="flex items-center gap-2 mb-2 text-sm font-medium text-secondary"
+              for="quiz-title"
+            >
+              <span class="material-icons-outlined text-lg">title</span>
+              Título del cuestionario
+            </label>
+            <input
+              class="w-full bg-slate-900 border-2 border-primary/50 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 transition-all neon-glow"
+              id="quiz-title"
+              type="text"
+              placeholder="Ej: Trivia de Historia"
+              style="
+                --tw-shadow-color: rgba(217, 70, 239, 0.5);
+                --focus-color: #d946ef;
+              "
+            />
+            <p class="text-right text-xs text-gray-500 mt-2">Paso 1 de 4</p>
+          </div>
+
+          <div
+            id="step2"
+            class="opacity-50 pointer-events-none transition-all duration-300"
+          >
+            <label
+              class="flex items-center gap-2 mb-2 text-sm font-medium text-secondary"
+              for="question-type"
+            >
+              <span class="material-icons-outlined text-lg">quiz</span>
+              Tipo de pregunta
+            </label>
+            <div class="relative">
+              <select
+                class="w-full appearance-none bg-slate-900 border-2 border-primary/50 rounded-lg px-4 py-3 text-white focus:ring-2 transition-all neon-glow form-select"
+                id="question-type"
+                style="
+                  --tw-shadow-color: rgba(217, 70, 239, 0.5);
+                  --focus-color: #d946ef;
+                "
+              >
+                <option value="" selected disabled>
+                  Seleccione una opción
+                </option>
+                <option value="texto">📄 Pregunta de texto</option>
+                <option value="imagen">🖼️ Pregunta con imagen</option>
+                <option value="mixta">🎨 Texto e imagen</option>
+              </select>
+              <span
+                class="material-icons-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-primary"
+                >expand_more</span
+              >
+            </div>
+            <p class="text-right text-xs text-gray-500 mt-2">Paso 2 de 4</p>
+          </div>
+
+          <div
+            id="step3"
+            class="opacity-50 pointer-events-none transition-all duration-300"
+          >
+            <label
+              class="flex items-center gap-2 mb-2 text-sm font-medium text-success"
+              for="response-type"
+            >
+              <span class="material-icons-outlined text-lg">check_box</span>
+              Tipo de respuesta
+            </label>
+            <div class="relative">
+              <select
+                class="w-full appearance-none bg-slate-900 border-2 border-success/50 rounded-lg px-4 py-3 text-white focus:ring-2 transition-all neon-glow form-select"
+                id="response-type"
+                style="
+                  --tw-shadow-color: rgba(16, 185, 129, 0.5);
+                  --focus-color: #10b981;
+                "
+              >
+                <option value="" selected disabled>
+                  Seleccione una opción
+                </option>
+                <option value="abierta">✏️ Respuesta abierta</option>
+                <option value="unica">⭕ Opción múltiple (una correcta)</option>
+                <option value="multiple">
+                  ✔️ Opción múltiple (varias correctas)
+                </option>
+              </select>
+              <span
+                class="material-icons-outlined pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-success"
+                >expand_more</span
+              >
+            </div>
+            <p class="text-right text-xs text-gray-500 mt-2">Paso 3 de 4</p>
+          </div>
+
+          <div
+            id="step4"
+            class="opacity-50 pointer-events-none transition-all duration-300 space-y-4"
+          >
+            <label
+              class="flex items-center gap-2 mb-2 text-sm font-medium text-danger"
+            >
+              <span class="font-bold text-lg ml-1">?</span>
+              Contenido de la pregunta
+            </label>
+
+            <textarea
+              class="w-full bg-slate-900 border-2 border-danger/50 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:ring-2 transition-all neon-glow resize-none hidden form-textarea"
+              id="question-text"
+              rows="3"
+              placeholder="Escribe tu pregunta aquí"
+              style="
+                --tw-shadow-color: rgba(239, 68, 68, 0.5);
+                --focus-color: #ef4444;
+              "
+            ></textarea>
+
+            <div id="image-upload-container" class="hidden flex-col gap-4">
+              <label
+                class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-primary/50 rounded-lg cursor-pointer bg-slate-900/50 hover:bg-slate-900/80 transition-all neon-glow"
+                style="--tw-shadow-color: rgba(217, 70, 239, 0.3)"
+              >
+                <div
+                  class="flex flex-col items-center justify-center pt-5 pb-6"
+                >
+                  <span
+                    class="material-icons-outlined text-4xl text-primary mb-2"
+                    >cloud_upload</span
+                  >
+                  <p class="text-sm text-gray-400">
+                    <span class="font-semibold">Haz clic para subir</span> o
+                    arrastra una imagen
+                  </p>
+                  <p class="text-xs text-gray-500">PNG, JPG o GIF</p>
+                </div>
+                <input
+                  id="image-input"
+                  type="file"
+                  class="hidden"
+                  accept="image/*"
+                />
+              </label>
+              <div
+                id="image-preview"
+                class="hidden p-2 bg-slate-900 rounded-lg border border-primary/30"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-sm text-primary truncate max-w-[80%]"
+                    id="file-name"
+                    >nombre_imagen.jpg</span
+                  >
+                  <button
+                    type="button"
+                    id="remove-image-btn"
+                    class="text-danger hover:bg-danger/10 p-1 rounded"
+                  >
+                    <span class="material-icons-outlined text-sm">close</span>
+                  </button>
+                </div>
+                <img
+                  src=""
+                  alt="Preview"
+                  class="mt-2 rounded-lg max-h-48 mx-auto object-contain"
+                />
+              </div>
+            </div>
+
+            <p class="text-right text-xs text-gray-500 mt-2">Paso 4 de 4</p>
+          </div>
+
+          <div
+            id="options-container"
+            class="hidden space-y-4 mt-2 bg-slate-900/30 p-4 rounded-xl border border-primary/20"
+          >
+            <h4
+              class="flex items-center gap-2 text-sm font-bold text-primary uppercase tracking-wider mb-4"
+            >
+              <span class="material-icons-outlined text-lg">list</span>
+              Opciones de respuesta
+            </h4>
+            <div
+              class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border-l-4 border-red-500"
+            >
+              <input
+                type="checkbox"
+                class="option-check form-checkbox h-5 w-5 text-red-500 bg-slate-800 border-red-500/50 rounded focus:ring-red-500"
+                data-color="red"
+              />
+              <input
+                type="text"
+                class="option-input w-full bg-transparent border-0 border-b border-red-500/30 text-white placeholder-gray-500 focus:ring-0 focus:border-red-500 transition-all"
+                placeholder="Opción 1"
+              />
+            </div>
+            <div
+              class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border-l-4 border-blue-500"
+            >
+              <input
+                type="checkbox"
+                class="option-check form-checkbox h-5 w-5 text-blue-500 bg-slate-800 border-blue-500/50 rounded focus:ring-blue-500"
+                data-color="blue"
+              />
+              <input
+                type="text"
+                class="option-input w-full bg-transparent border-0 border-b border-blue-500/30 text-white placeholder-gray-500 focus:ring-0 focus:border-blue-500 transition-all"
+                placeholder="Opción 2"
+              />
+            </div>
+            <div
+              class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border-l-4 border-green-500"
+            >
+              <input
+                type="checkbox"
+                class="option-check form-checkbox h-5 w-5 text-green-500 bg-slate-800 border-green-500/50 rounded focus:ring-green-500"
+                data-color="green"
+              />
+              <input
+                type="text"
+                class="option-input w-full bg-transparent border-0 border-b border-green-500/30 text-white placeholder-gray-500 focus:ring-0 focus:border-green-500 transition-all"
+                placeholder="Opción 3"
+              />
+            </div>
+            <div
+              class="flex items-center gap-3 bg-slate-900/50 p-3 rounded-lg border-l-4 border-yellow-500"
+            >
+              <input
+                type="checkbox"
+                class="option-check form-checkbox h-5 w-5 text-yellow-500 bg-slate-800 border-yellow-500/50 rounded focus:ring-yellow-500"
+                data-color="yellow"
+              />
+              <input
+                type="text"
+                class="option-input w-full bg-transparent border-0 border-b border-yellow-500/30 text-white placeholder-gray-500 focus:ring-0 focus:border-yellow-500 transition-all"
+                placeholder="Opción 4"
+              />
+            </div>
+          </div>
+
+          <button
+            id="btn-save-question"
+            class="w-full flex items-center justify-center gap-3 bg-primary/80 hover:bg-primary text-white font-bold py-4 px-6 rounded-lg transition-all btn-glow opacity-50 pointer-events-none"
+            style="--tw-shadow-color: #d946ef"
+          >
+            <span class="material-icons-outlined">save</span>
+            Guardar Pregunta
+          </button>
+        </section>
+
+        <section
+          class="lg:col-span-1 flex flex-col bg-slate-900/30 p-4 rounded-xl border border-primary/20 max-h-[80vh]"
+        >
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="flex items-center gap-2 text-lg font-bold text-white">
+              <span class="material-icons-outlined text-secondary"
+                >inventory_2</span
+              >
+              Preguntas (<span id="saved-count">0</span>)
+            </h2>
+            <button
+              id="btn-clear-all"
+              class="text-danger hover:bg-danger/10 px-2 py-1 rounded text-sm flex items-center gap-1 hidden"
+            >
+              <span class="material-icons-outlined text-sm">delete_sweep</span>
+              Vaciar
+            </button>
+          </div>
+
+          <div
+            id="saved-questions-list"
+            class="flex flex-col gap-3 overflow-y-auto flex-grow pr-2"
+          ></div>
+
+          <div
+            id="empty-state-message"
+            class="flex-grow flex flex-col justify-center items-center text-center p-8 border border-dashed border-gray-700 rounded-lg"
+          >
+            <span class="material-icons-outlined text-6xl text-gray-600 mb-4"
+              >inbox</span
+            >
+            <h3 class="text-lg font-semibold text-gray-400">
+              No hay preguntas creadas aún
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Completa el formulario y pulsa "Guardar Pregunta".
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="pt-6 mt-6 border-t border-gray-800">
+        <button
+          id="btn-finalizar"
+          class="w-full flex items-center justify-center gap-3 bg-success hover:bg-success/90 text-white font-bold py-4 px-6 rounded-lg transition-all btn-glow opacity-50 pointer-events-none"
+          style="--tw-shadow-color: #10b981"
+        >
+          <span class="material-icons-outlined">rocket_launch</span>
+          Finalizar y Enviar Cuestionario
+        </button>
+      </footer>
+    </div>
+
+    <script>
+      // --- ESTADO GLOBAL ---
+      let savedQuestionsList = [];
+      let currentImageFile = null;
+      let currentImageBase64 = null;
+
+      // --- REFERENCIAS AL DOM ---
+      const quizTitleInput = document.getElementById("quiz-title");
+      const questionTypeSelect = document.getElementById("question-type");
+      const responseTypeSelect = document.getElementById("response-type");
+      const questionTextarea = document.getElementById("question-text");
+      const imageInput = document.getElementById("image-input");
+      const imagePreviewContainer = document.getElementById("image-preview");
+      const imagePreviewImg = imagePreviewContainer.querySelector("img");
+      const fileNameSpan = document.getElementById("file-name");
+      const removeImageBtn = document.getElementById("remove-image-btn");
+
+      const step1Div = document.getElementById("step1");
+      const step2Div = document.getElementById("step2");
+      const step3Div = document.getElementById("step3");
+      const step4Div = document.getElementById("step4");
+      const optionsContainer = document.getElementById("options-container");
+      const imageUploadContainer = document.getElementById(
+        "image-upload-container"
+      );
+
+      const btnSaveQuestion = document.getElementById("btn-save-question");
+      const btnFinalizar = document.getElementById("btn-finalizar");
+      const btnClearAll = document.getElementById("btn-clear-all");
+
+      const savedListContainer = document.getElementById(
+        "saved-questions-list"
+      );
+      const emptyStateMessage = document.getElementById("empty-state-message");
+      const savedCountSpan = document.getElementById("saved-count");
+
+      const optionInputs = document.querySelectorAll(".option-input");
+      const optionChecks = document.querySelectorAll(".option-check");
+
+      // =================================================================
+      // 1. LÓGICA DE ACTIVACIÓN DE PASOS
+      // =================================================================
+      function activateStep(stepDiv) {
+        stepDiv.classList.remove("opacity-50", "pointer-events-none");
+      }
+      function deactivateStep(stepDiv) {
+        stepDiv.classList.add("opacity-50", "pointer-events-none");
+      }
+
+      quizTitleInput.addEventListener("input", () => {
+        quizTitleInput.value.trim() !== ""
+          ? activateStep(step2Div)
+          : deactivateStep(step2Div);
+        updateFinalizeButtonState();
+      });
+
+      questionTypeSelect.addEventListener("change", () => {
+        activateStep(step3Div);
+        const type = questionTypeSelect.value;
+        // Mostrar/ocultar campos según tipo de pregunta
+        questionTextarea.classList.toggle("hidden", type === "imagen");
+        imageUploadContainer.classList.toggle("hidden", type === "texto");
+      });
+
+      responseTypeSelect.addEventListener("change", () => {
+        activateStep(step4Div);
+        const type = responseTypeSelect.value;
+        // Mostrar/ocultar opciones
+        optionsContainer.classList.toggle("hidden", type === "abierta");
+        activateStep(btnSaveQuestion);
+
+        // Configurar checkboxes para selección única
+        if (type === "unica") {
+          optionChecks.forEach((check) => {
+            check.addEventListener("change", function () {
+              if (this.checked) {
+                optionChecks.forEach((other) => {
+                  if (other !== this) other.checked = false;
+                });
+              }
+            });
+          });
+        } else {
+          // Remover listeners si se cambia a múltiple (más complejo de remover, simple reload del nodo)
+          const newContainer = optionsContainer.cloneNode(true);
+          optionsContainer.parentNode.replaceChild(
+            newContainer,
+            optionsContainer
+          );
+          // Recargar referencias
+          document
+            .querySelectorAll(".option-check")
+            .forEach((c) => (c.checked = false));
+        }
+      });
+
+      // =================================================================
+      // 2. LÓGICA DE SUBIDA DE IMAGEN
+      // =================================================================
+      imageInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          currentImageFile = file;
+          fileNameSpan.textContent = file.name;
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            currentImageBase64 = e.target.result;
+            imagePreviewImg.src = currentImageBase64;
+            imagePreviewContainer.classList.remove("hidden");
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      removeImageBtn.addEventListener("click", () => {
+        imageInput.value = "";
+        currentImageFile = null;
+        currentImageBase64 = null;
+        imagePreviewContainer.classList.add("hidden");
+      });
+
+      // =================================================================
+      // 3. FUNCIÓN: GUARDAR PREGUNTA LOCALMENTE
+      // =================================================================
+      btnSaveQuestion.addEventListener("click", () => {
+        const qType = questionTypeSelect.value;
+        const rType = responseTypeSelect.value;
+        const qText = questionTextarea.value.trim();
+
+        // --- VALIDACIONES ---
+        if (!quizTitleInput.value.trim())
+          return alert("Ingresa el título del cuestionario.");
+        if (!qType) return alert("Selecciona un tipo de pregunta.");
+        if (!rType) return alert("Selecciona un tipo de respuesta.");
+
+        if ((qType === "texto" || qType === "mixta") && qText === "")
+          return alert("Escribe el texto de la pregunta.");
+        if ((qType === "imagen" || qType === "mixta") && !currentImageFile)
+          return alert("Selecciona una imagen.");
+
+        let questionData = {
+          tipo_pregunta: qType,
+          tipo_respuesta: rType,
+          pregunta: qText,
+          imagen: currentImageFile ? currentImageFile.name : null,
+          imagenBase64: currentImageBase64, // Para vista previa
+          opciones: [],
+          correctas: [],
+        };
+
+        // --- LÓGICA PARA OPCIONES ---
+        if (rType !== "abierta") {
+          const tempOptions = [];
+          const tempCorrects = [];
+          let filledCount = 0;
+
+          document.querySelectorAll(".option-input").forEach((input, index) => {
+            const val = input.value.trim();
+            if (val !== "") {
+              tempOptions.push(val);
+              filledCount++;
+              if (document.querySelectorAll(".option-check")[index].checked) {
+                tempCorrects.push(index + 1);
+              }
+            }
+          });
+
+          if (filledCount < 2)
+            return alert("Debes llenar al menos 2 opciones.");
+          if (tempCorrects.length === 0)
+            return alert("Debes marcar al menos una opción correcta.");
+
+          questionData.opciones = tempOptions;
+          questionData.correctas = tempCorrects;
+        }
+
+        // --- GUARDAR Y ACTUALIZAR ---
+        savedQuestionsList.push(questionData);
+        renderSavedQuestions();
+        resetForm();
+        updateFinalizeButtonState();
+      });
+
+      // =================================================================
+      // 4. FUNCIÓN: RENDERIZAR LISTA LATERAL
+      // =================================================================
+      function renderSavedQuestions() {
+        savedCountSpan.textContent = savedQuestionsList.length;
+        btnClearAll.classList.toggle("hidden", savedQuestionsList.length === 0);
+
+        if (savedQuestionsList.length === 0) {
+          emptyStateMessage.classList.remove("hidden");
+          savedListContainer.innerHTML = "";
+          return;
+        } else {
+          emptyStateMessage.classList.add("hidden");
+        }
+
+        savedListContainer.innerHTML = "";
+        savedQuestionsList.forEach((q, index) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-slate-900/80 p-3 rounded-lg border border-primary/30 relative group animate-slide-in";
+
+          let iconStr =
+            q.tipo_respuesta === "abierta" ? "edit_note" : "list_alt";
+          let typeStr =
+            q.tipo_respuesta === "abierta"
+              ? "Respuesta Abierta"
+              : "Opción Múltiple";
+          let titleStr =
+            q.pregunta ||
+            (q.imagen ? "Pregunta con imagen" : "Pregunta sin título");
+
+          let imgHTML = q.imagenBase64
+            ? `<img src="${q.imagenBase64}" class="mt-2 h-16 rounded object-cover border border-primary/20">`
+            : "";
+
+          card.innerHTML = `
+          <button onclick="deleteQuestion(${index})" class="absolute top-2 right-2 text-danger opacity-0 group-hover:opacity-100 transition-opacity hover:bg-danger/10 p-1 rounded"><span class="material-icons-outlined text-sm">delete</span></button>
+          <div class="flex items-center gap-2 mb-1 text-xs font-bold text-secondary uppercase tracking-wider">
+            <span class="material-icons-outlined text-sm">${iconStr}</span>
+            ${index + 1}. ${typeStr}
+          </div>
+          <p class="text-white font-medium text-sm line-clamp-2">${titleStr}</p>
+          ${imgHTML}
+        `;
+          savedListContainer.appendChild(card);
+        });
+      }
+
+      function deleteQuestion(index) {
+        if (confirm("¿Eliminar esta pregunta?")) {
+          savedQuestionsList.splice(index, 1);
+          renderSavedQuestions();
+          updateFinalizeButtonState();
+        }
+      }
+
+      btnClearAll.addEventListener("click", () => {
+        if (confirm("¿Vaciar toda la lista de preguntas?")) {
+          savedQuestionsList = [];
+          renderSavedQuestions();
+          updateFinalizeButtonState();
+        }
+      });
+
+      // =================================================================
+      // 5. FUNCIONES AUXILIARES
+      // =================================================================
+      function resetForm() {
+        questionTextarea.value = "";
+        removeImageBtn.click();
+        document
+          .querySelectorAll(".option-input")
+          .forEach((i) => (i.value = ""));
+        document
+          .querySelectorAll(".option-check")
+          .forEach((c) => (c.checked = false));
+        // Volver al paso 2
+        questionTypeSelect.value = "";
+        responseTypeSelect.value = "";
+        deactivateStep(step3Div);
+        deactivateStep(step4Div);
+        deactivateStep(btnSaveQuestion);
+        optionsContainer.classList.add("hidden");
+        questionTextarea.classList.add("hidden");
+        imageUploadContainer.classList.add("hidden");
+      }
+
+      function updateFinalizeButtonState() {
+        if (
+          savedQuestionsList.length > 0 &&
+          quizTitleInput.value.trim() !== ""
+        ) {
+          activateStep(btnFinalizar);
+        } else {
+          deactivateStep(btnFinalizar);
+        }
+      }
+
+      // =================================================================
+      // 6. FUNCIÓN: FINALIZAR Y ENVIAR TODO
+      // =================================================================
+      btnFinalizar.addEventListener("click", async () => {
+        if (savedQuestionsList.length === 0)
+          return alert("Guarda al menos una pregunta.");
+
+        const titulo = quizTitleInput.value.trim();
+        const originalText = btnFinalizar.innerHTML;
+        btnFinalizar.disabled = true;
+        btnFinalizar.innerHTML =
+          '<span class="material-icons-outlined animate-spin mr-2">sync</span> Guardando cuestionario...';
+
+        try {
+          const response = await fetch("/api/guardar-cuestionario", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              titulo: titulo,
+              preguntas: savedQuestionsList,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Redirigir a dashboard o mostrar éxito
+            alert("✅ Cuestionario guardado exitosamente!");
+            window.location.href = data.redirect_url || "/"; // Ajusta la URL de destino
+          } else {
+            alert("❌ Error al guardar: " + data.error);
+            btnFinalizar.disabled = false;
+            btnFinalizar.innerHTML = originalText;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("⚠️ Error de conexión con el servidor.");
+          btnFinalizar.disabled = false;
+          btnFinalizar.innerHTML = originalText;
+        }
+      });
+    </script>
+  </body>
+</html>

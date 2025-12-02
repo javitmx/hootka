@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kahoot Live - Podio Final</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div id="confetti-container"></div>
+
+    <div class="container podium-layout">
+      <div style="text-align: center; margin-bottom: 20px; position: relative">
+        <button
+          onclick="window.location.href='/'"
+          style="
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #ff073a;
+            font-size: 1.5rem;
+            cursor: pointer;
+          "
+        >
+          ✕
+        </button>
+        <p class="neon-cyan" style="margin: 0; display: inline-block">
+          🎯 RESULTADOS FINALES 🎯
+        </p>
+      </div>
+
+      <h1 class="title">🏆 PODIO 🏆</h1>
+
+      <div class="podium-container">
+        {% if podio.segundo %}
+        <div class="podium-item podium-second" style="order: 1">
+          <div class="podium-avatar"></div>
+          <div class="podium-position">2</div>
+          <p class="podium-name">{{ podio.segundo.nombre }}</p>
+          <p class="podium-score neon-cyan">{{ podio.segundo.puntaje }} pts</p>
+          <div class="podium-bar"></div>
+        </div>
+        {% endif %} {% if podio.primero %}
+        <div class="podium-item podium-first" style="order: 2">
+          <div class="crown">👑</div>
+          <div class="podium-avatar"></div>
+          <div class="podium-position">1</div>
+          <p class="podium-name neon-pink">{{ podio.primero.nombre }}</p>
+          <p class="podium-score neon-yellow">
+            {{ podio.primero.puntaje }} pts
+          </p>
+          <div class="podium-bar"></div>
+        </div>
+        {% endif %} {% if podio.tercero %}
+        <div class="podium-item podium-third" style="order: 3">
+          <div class="podium-avatar"></div>
+          <div class="podium-position">3</div>
+          <p class="podium-name">{{ podio.tercero.nombre }}</p>
+          <p class="podium-score neon-green">{{ podio.tercero.puntaje }} pts</p>
+          <div class="podium-bar"></div>
+        </div>
+        {% endif %}
+      </div>
+
+      {% if mi_posicion > 3 %}
+      <div class="card card-pink">
+        <p class="text-muted" style="margin-bottom: 5px">Tu posición</p>
+        <p
+          style="font-size: 2rem; font-weight: 900; margin: 0"
+          class="neon-pink"
+        >
+          #{{ mi_posicion }}
+        </p>
+        <p class="neon-yellow" style="margin: 5px 0 0">
+          {{ jugador.puntaje }} pts
+        </p>
+      </div>
+      {% endif %}
+
+      <h3 class="neon-cyan" style="text-align: center; margin-bottom: 20px">
+        📊 Ranking Completo
+      </h3>
+
+      <div class="players-list">
+        {% for j in ranking %}
+        <div class="player-item {% if j.id == jugador.id %}me{% endif %}">
+          <span
+            class="rank-number {{ 'rank-top-3' if loop.index <= 3 else 'rank-other' }}"
+          >
+            {% if loop.index == 1 %}🥇 {% elif loop.index == 2 %}🥈 {% elif
+            loop.index == 3 %}🥉 {% else %}{{ loop.index }}{% endif %}
+          </span>
+          <div class="player-avatar"></div>
+          <span class="player-name">
+            {{ j.nombre }} {% if j.id == jugador.id %}<span
+              style="color: #ff00ff"
+            >
+              (Tú)</span
+            >{% endif %}
+          </span>
+          <span class="player-score">{{ j.puntaje }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <button onclick="window.location.href='/'" class="btn btn-primary">
+        🔥 JUGAR DE NUEVO
+      </button>
+    </div>
+
+    <audio id="victory-audio" autoplay>
+      <source
+        src="{{ url_for('static', filename='sounds/victory.mp3') }}"
+        type="audio/mpeg"
+      />
+    </audio>
+
+    <script>
+      const colors = ["#ff00ff", "#00f0ff", "#faff00", "#39ff14", "#ff073a"];
+      const container = document.getElementById("confetti-container");
+
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement("div");
+          confetti.className = "confetti";
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.top = "-10px";
+          confetti.style.background =
+            colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.borderRadius = Math.random() > 0.5 ? "50%" : "0";
+          // Usamos la variable CSS para la duración si quieres controlarla desde ahí
+          const duration = Math.random() * 2 + 2;
+          confetti.style.setProperty("--duration", duration + "s");
+          confetti.style.animationDelay = Math.random() * 2 + "s";
+
+          container.appendChild(confetti);
+
+          setTimeout(() => confetti.remove(), (duration + 2) * 1000);
+        }, i * 100);
+      }
+    </script>
+  </body>
+</html>

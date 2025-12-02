@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kahoot Live - Esperando</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container" style="padding-top: 40px">
+      <!-- Efectos de fondo -->
+      <div
+        style="
+          position: fixed;
+          top: 0;
+          left: 50%;
+          width: 300px;
+          height: 300px;
+          background: #ff00ff;
+          filter: blur(120px);
+          opacity: 0.15;
+          pointer-events: none;
+          transform: translateX(-50%);
+        "
+      ></div>
+
+      <!-- Header -->
+      <div style="text-align: center; margin-bottom: 30px">
+        <h1 class="title" style="font-size: 2rem">🎮 KAHOOT LIVE</h1>
+      </div>
+
+      <!-- Confirmación de entrada -->
+      <div
+        class="card card-pink"
+        style="text-align: center; margin-bottom: 30px"
+      >
+        <p style="color: #39ff14; font-size: 1.2rem; margin-bottom: 10px">
+          ✅ ¡Estás dentro!
+        </p>
+        <p style="font-size: 1.5rem; font-weight: 700">
+          {{ jugador.nombre if jugador else 'Jugador' }}
+        </p>
+      </div>
+
+      <!-- PIN del juego -->
+      <div class="pin-display" style="margin-bottom: 30px">
+        <p class="pin-label">GAME PIN</p>
+        <p class="pin-number">{{ pin }}</p>
+      </div>
+
+      <!-- Mensaje de espera -->
+      <div class="waiting-message">
+        <div class="spinner"></div>
+        <p class="neon-cyan" style="font-size: 1.2rem">
+          Esperando que el profesor inicie el juego...
+        </p>
+        <p style="color: #888; margin-top: 10px">No cierres esta ventana</p>
+      </div>
+
+      <!-- Mensaje opcional -->
+      {% if mensaje %}
+      <div class="card" style="text-align: center; margin-top: 20px">
+        <p>{{ mensaje }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Script de polling para detectar inicio del juego -->
+    <script>
+      // Consultar estado cada 2 segundos
+      setInterval(function () {
+        fetch("/api/estado-juego")
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.estado === "jugando") {
+              // El juego comenzó, redirigir
+              window.location.href = "/jugar";
+            } else if (data.estado === "finalizado") {
+              window.location.href = "/podio";
+            }
+          })
+          .catch((err) => console.log("Esperando..."));
+      }, 2000);
+    </script>
+  </body>
+</html>

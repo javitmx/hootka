@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Crear Cuenta - Game Live</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#f0f",
+            "background-light": "#f0f0f0",
+            "background-dark": "#0d011a",
+            "neon-cyan": "#00ffff",
+            "neon-magenta": "#ff00ff",
+          },
+          fontFamily: {
+            display: ["Poppins", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.75rem",
+          },
+          boxShadow: {
+            "neon-primary": "0 0 5px #f0f, 0 0 10px #f0f, 0 0 15px #f0f",
+            "neon-cyan": "0 0 5px #00ffff, 0 0 10px #00ffff",
+            "neon-magenta": "0 0 5px #ff00ff, 0 0 10px #ff00ff",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .neon-gradient-text {
+      background: linear-gradient(90deg, #00ffff, #ff00ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 8px rgba(255, 0, 255, 0.7));
+    }
+
+    .neon-gradient-bg {
+      background: linear-gradient(90deg, #ff00ff, #00ffff);
+    }
+  </style>
+  <style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display">
+  <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-sm mx-auto">
+      <div class="text-center mb-8">
+        <h1 class="text-4xl font-bold tracking-wider uppercase neon-gradient-text">
+          Crear cuenta
+        </h1>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="mb-6 space-y-4">
+        {% for category, message in messages %}
+        {% if category == 'danger' %}
+        <div
+          class="p-4 bg-red-100 border-l-4 border-red-500 text-red-700 dark:bg-red-900/30 dark:border-red-500 dark:text-red-300 rounded shadow-md"
+          role="alert">
+          <div class="flex items-center">
+            <span class="material-symbols-outlined mr-2">error</span>
+            <p class="font-bold">Error</p>
+          </div>
+          <p class="mt-1">{{ message }}</p>
+        </div>
+        {% elif category == 'success' %}
+        <div
+          class="p-4 bg-green-100 border-l-4 border-green-500 text-green-700 dark:bg-green-900/30 dark:border-green-500 dark:text-green-300 rounded shadow-md"
+          role="alert">
+          <div class="flex items-center">
+            <span class="material-symbols-outlined mr-2">check_circle</span>
+            <p class="font-bold">¡Éxito!</p>
+          </div>
+          <p class="mt-1">{{ message }}</p>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% endwith %}
+      <form class="space-y-6" action="{{ url_for('register') }}" method="POST">
+        <form class="space-y-6">
+          <div>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400" for="username">Nuevo usuario</label>
+            <div class="mt-1 relative">
+              <input
+                class="w-full bg-transparent border-2 border-neon-cyan text-white dark:text-gray-200 rounded-lg py-3 px-4 focus:ring-0 focus:border-neon-magenta focus:shadow-neon-magenta transition-all duration-300"
+                id="username" name="usuario" placeholder="Ingresa tu usuario" required="" type="text" />
+            </div>
+          </div>
+          <div class="input-group" style="margin-top: 20px;">
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400" for="email">Correo Electrónico</label>
+            <div class="mt-1 relative">
+              <input class="w-full bg-transparent border-2 border-neon-cyan text-white dark:text-gray-200 rounded-lg py-3 px-4 focus:ring-0 focus:border-neon-magenta focus:shadow-neon-magenta transition-all duration-300"
+                id="email" name="email" placeholder="Ingresa tu Correo" required="" type="text" />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400" for="password">Contraseña</label>
+            <div class="mt-1 relative">
+              <input
+                class="w-full bg-transparent border-2 border-neon-cyan text-white dark:text-gray-200 rounded-lg py-3 px-4 focus:ring-0 focus:border-neon-magenta focus:shadow-neon-magenta transition-all duration-300"
+                id="password" name="password" placeholder="Ingresa tu contraseña" required="" type="password" />
+            </div>
+          </div>
+          <div>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400" for="confirm-password">Confirmar
+              contraseña</label>
+            <div class="mt-1 relative">
+              <input
+                class="w-full bg-transparent border-2 border-neon-cyan text-white dark:text-gray-200 rounded-lg py-3 px-4 focus:ring-0 focus:border-neon-magenta focus:shadow-neon-magenta transition-all duration-300"
+                id="confirm-password" name="confirmar" placeholder="Confirma tu contraseña" required=""
+                type="password" />
+            </div>
+          </div>
+          <div class="pt-4">
+            <button
+              class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-neon-primary text-white font-bold text-lg uppercase neon-gradient-bg hover:shadow-neon-magenta transition-shadow duration-300"
+              type="submit">
+              <span class="material-symbols-outlined mr-2">rocket_launch</span>
+              Registrar
+            </button>
+          </div>
+        </form>
+        <p class="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
+          ¿Ya tienes una cuenta?
+          <a class="font-medium text-neon-cyan hover:text-neon-magenta transition-colors duration-300"
+            href="{{ url_for('login') }}">Inicia sesión aquí</a>
+        </p>
+    </div>
+  </div>
+</body>
+
+</html>

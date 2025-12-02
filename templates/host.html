@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kahoot Live - Panel del Host</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    /* --- VARIABLES Y ESTILOS GLOBALES --- */
+    :root {
+      --primary-color: #8b00ff;
+      --secondary-color: #00bfff;
+      --accent-pink: #d946ef;
+      --neon-pink: #ff00ff;
+      --neon-cyan: #00ffff;
+      --neon-green: #00ff00;
+      --neon-yellow: #ffff00;
+      --neon-red: #ff0000;
+      --bg-dark: #0a0a0a;
+      --bg-card: rgba(20, 20, 30, 0.8);
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: var(--bg-dark);
+      color: white;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+
+    /* --- UTILIDADES NEÓN --- */
+    .neon-text-pink {
+      color: var(--neon-pink);
+      text-shadow: 0 0 8px var(--neon-pink);
+    }
+
+    .neon-text-cyan {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 8px var(--neon-cyan);
+    }
+
+    .neon-text-green {
+      color: var(--neon-green);
+      text-shadow: 0 0 8px var(--neon-green);
+    }
+
+    .neon-text-yellow {
+      color: var(--neon-yellow);
+      text-shadow: 0 0 8px var(--neon-yellow);
+    }
+
+    .neon-text-red {
+      color: var(--neon-red);
+      text-shadow: 0 0 8px var(--neon-red);
+    }
+
+    .text-muted {
+      color: #aaa;
+    }
+
+    /* --- LAYOUT PRINCIPAL --- */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid rgba(139, 0, 255, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    /* --- HEADER COMPACTO --- */
+    .header-panel {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: 1px solid rgba(139, 0, 255, 0.2);
+    }
+
+    .header-title {
+      font-size: 1.4rem;
+      margin: 0;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: 1px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .question-count {
+      font-weight: 600;
+      font-size: 0.95rem;
+      background: rgba(0, 255, 255, 0.1);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    /* --- BOTONES DEL HEADER --- */
+    .btn-header,
+    .btn-logout {
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      border: none;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-header {
+      background: var(--accent-pink);
+      color: white;
+      box-shadow: 0 4px 10px rgba(217, 70, 239, 0.4);
+    }
+
+    .btn-header:hover {
+      background: #c026d3;
+      box-shadow: 0 6px 15px rgba(217, 70, 239, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .btn-logout {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+      border: 1px solid #ef4444;
+    }
+
+    .btn-logout:hover {
+      background: #ef4444;
+      color: white;
+      box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+    }
+
+    /* --- PIN DISPLAY --- */
+    .pin-display {
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px solid var(--neon-cyan);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.15);
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pin-display::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle,
+          rgba(0, 255, 255, 0.1) 0%,
+          transparent 60%);
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .pin-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .pin-label {
+      font-size: 1.1rem;
+      color: var(--neon-cyan);
+      margin-bottom: 5px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .pin-number {
+      font-size: 4rem;
+      font-weight: 900;
+      color: white;
+      text-shadow: 0 0 15px var(--neon-cyan);
+      letter-spacing: 5px;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .pin-hint {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+
+    /* --- GRID DE ESTADÍSTICAS --- */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(139, 0, 255, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .stat-icon {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      opacity: 0.8;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin: 0;
+      line-height: 1;
+    }
+
+    .stat-label {
+      color: #ccc;
+      font-size: 0.9rem;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #status-text {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    /* --- LISTA DE JUGADORES --- */
+    .players-list-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .players-list-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .players-list {
+      max-height: 350px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    /* Scrollbar */
+    .players-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .players-list::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.1);
+      border-radius: 3px;
+    }
+
+    .players-list::-webkit-scrollbar-thumb {
+      background: var(--primary-color);
+      border-radius: 3px;
+    }
+
+    .player-item {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 10px;
+      border-left: 4px solid var(--secondary-color);
+      transition: all 0.2s ease;
+    }
+
+    .player-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateX(5px);
+    }
+
+    .player-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,
+          var(--primary-color),
+          var(--neon-cyan));
+      margin-right: 15px;
+      box-shadow: 0 0 8px rgba(0, 191, 255, 0.5);
+    }
+
+    .player-name {
+      flex-grow: 1;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .player-score {
+      font-weight: 800;
+      color: var(--neon-yellow);
+      font-size: 1.1rem;
+    }
+
+    /* --- BOTONES DE CONTROL --- */
+    .host-controls {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .host-controls button,
+    .host-controls a.btn {
+      flex: 1;
+    }
+
+    .btn {
+      border: none;
+      padding: 16px 24px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: white;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.1);
+    }
+
+    .btn:active {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(to right, var(--primary-color), #a020f0);
+      box-shadow: 0 4px 15px rgba(139, 0, 255, 0.4);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(to right, var(--secondary-color), #0099cc);
+      box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
+    }
+
+    .btn-start {
+      background: linear-gradient(to right, var(--neon-green), #00cc00);
+      color: black;
+      box-shadow: 0 4px 15px rgba(0, 255, 0, 0.4);
+      text-shadow: none;
+    }
+
+    /* --- RESULTADOS --- */
+    .results-summary {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+    }
+
+    .results-bar {
+      height: 32px;
+      border-radius: 8px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      color: black;
+      font-weight: 800;
+      font-size: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .rank-number {
+      font-size: 1.3rem;
+      width: 30px;
+      font-weight: 900;
+      margin-right: 15px;
+      text-align: center;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header-panel">
+      <div>
+        <h1 class="header-title neon-text-pink">
+          <span class="material-icons-outlined">dvr</span>
+          PANEL DEL HOST
+        </h1>
+      </div>
+      <style>
+        .host-panel-right {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+          width: 300px;
+          margin-left: auto;
+          font-family: 'Poppins', sans-serif;
+          /* background-color: #050505;  <- Descomenta esto si no tienes un fondo oscuro global */
+          padding: 20px;
+          border-radius: 15px;
+        }
+
+        /* --- CAJA SUPERIOR MORADA --- */
+        .neon-select-box {
+          border: 2px solid #b026ff;
+          border-radius: 12px;
+          padding: 15px;
+          background-color: #0f0f1a;
+          box-shadow: 0 0 10px rgba(176, 38, 255, 0.3);
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .neon-title {
+          color: white;
+          font-size: 14px;
+          font-weight: 700;
+          margin-bottom: 5px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .input-group {
+          display: flex;
+          gap: 8px;
+        }
+
+        /* El Select personalizado */
+        .custom-neon-select {
+          flex-grow: 1;
+          background-color: #000;
+          border: 1px solid #00e5ff;
+          border-radius: 6px;
+          padding: 8px;
+          color: #fff;
+          font-size: 12px;
+          outline: none;
+          box-shadow: 0 0 5px rgba(0, 229, 255, 0.2);
+          /* Asegura que si el nombre es muy largo, no rompa el diseño */
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* Botón "Usar Este" */
+        .btn-neon-action {
+          background: transparent;
+          border: 1px solid #00e5ff;
+          color: white;
+          padding: 5px 12px;
+          border-radius: 6px;
+          font-size: 10px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: 0.3s;
+          box-shadow: 0 0 5px rgba(0, 229, 255, 0.2);
+          white-space: nowrap;
+          /* Evita que el texto del botón se parta */
+        }
+
+        .btn-neon-action:hover {
+          background: #00e5ff;
+          color: black;
+          box-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+        }
+
+        /* --- BOTÓN GRANDE MAGENTA (CREAR) --- */
+        .btn-neon-create {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: #ff00ff;
+          color: white;
+          text-decoration: none;
+          padding: 12px;
+          border-radius: 10px;
+          font-weight: 800;
+          font-size: 13px;
+          text-transform: uppercase;
+          box-shadow: 0 0 15px #ff00ff, 0 0 30px rgba(255, 0, 255, 0.4);
+          border: none;
+          transition: transform 0.1s;
+          gap: 8px;
+        }
+
+        .btn-neon-create:hover {
+          background-color: #ff33ff;
+        }
+
+        .btn-neon-create:active {
+          transform: scale(0.98);
+        }
+
+        /* --- BOTÓN SALIR (ROJO/NARANJA) --- */
+        .btn-neon-exit {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background: transparent;
+          border: 2px solid #ff4500;
+          color: #ff4500;
+          text-decoration: none;
+          padding: 12px;
+          border-radius: 10px;
+          font-weight: 800;
+          font-size: 13px;
+          text-transform: uppercase;
+          box-shadow: 0 0 8px rgba(255, 69, 0, 0.3);
+          transition: 0.3s;
+          gap: 8px;
+        }
+
+        .btn-neon-exit:hover {
+          background: #ff4500;
+          color: white;
+          box-shadow: 0 0 20px #ff4500;
+        }
+      </style>
+
+      <div class="host-panel-right">
+
+        <div class="neon-select-box">
+          <div class="neon-title">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Seleccionar Cuestionario</span>
+          </div>
+
+          <div class="input-group">
+            <select id="selectorKahoot" class="custom-neon-select">
+              {% for k in kahoots_disponibles %}
+              <option value="{{ k.id }}" {% if k.id==partida.kahoot_id %}selected{% endif %}>
+                ID {{ k.id }}: {{ k.titulo }}
+              </option>
+              {% endfor %}
+            </select>
+
+            <button onclick="cambiarCuestionario()" class="btn-neon-action">
+              USAR ESTE
+            </button>
+          </div>
+        </div>
+
+        <a href="{{ url_for('vista_crear_cuestionario') }}" class="btn-neon-create">
+          <i class="fa-solid fa-circle-plus"></i>
+          CREAR CUESTIONARIO
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="btn-neon-exit">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          SALIR
+        </a>
+
+      </div>
+
+      <script>
+        function cambiarCuestionario() {
+          const selector = document.getElementById('selectorKahoot');
+          const nuevoKahootId = selector.value;
+          const pin = "{{ pin }}"; // Obtenemos el PIN de Flask
+
+          if (!confirm("¿Estás seguro? Al cambiar el cuestionario se reiniciará la partida y se desconectarán los jugadores actuales.")) {
+            return;
+          }
+
+          fetch(`/host/${pin}/seleccionar-kahoot`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ kahoot_id: nuevoKahootId })
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert("✅ ¡Cuestionario cambiado! La página se recargará.");
+                window.location.reload();
+              } else {
+                alert("❌ Error: " + (data.error || "No se pudo cambiar"));
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert("❌ Error de conexión");
+            });
+        }
+      </script>
+    </div>
+
+    <div class="pin-display">
+      <div class="pin-content">
+        <p class="pin-label">GAME PIN</p>
+        <h2 class="pin-number">{{ pin }}</h2>
+        <p class="pin-hint">
+          Comparte este PIN con tus jugadores para que se unan
+        </p>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div id="game-status" class="stat-card" style="grid-column: span 2">
+        <span class="material-icons-outlined stat-icon neon-text-cyan">info</span>
+        <p class="stat-label">Estado del Juego</p>
+        <p id="status-text" class="neon-text-cyan">Esperando jugadores...</p>
+      </div>
+      <div class="stat-card">
+        <span class="material-icons-outlined stat-icon neon-text-green">groups</span>
+        <p class="stat-number neon-text-green" id="player-count">
+          {{ jugadores|length }}
+        </p>
+        <p class="stat-label">Jugadores Conectados</p>
+      </div>
+      <div class="stat-card">
+        <span class="material-icons-outlined stat-icon neon-text-yellow">quiz</span>
+        <p class="stat-number neon-text-yellow" id="current-question">0</p>
+        <p class="stat-label">Pregunta Actual</p>
+      </div>
+    </div>
+
+    <div class="row" style="display: flex; gap: 20px; flex-wrap: wrap">
+      <div class="card players-list-container" style="flex: 1; min-width: 300px">
+        <div class="players-list-header">
+          <h3 class="neon-text-cyan">
+            <span class="material-icons-outlined">person_add</span>
+            Sala de Espera
+          </h3>
+        </div>
+        <div id="players-list" class="players-list">
+          {% for j in jugadores %}
+          <div class="player-item">
+            <div class="player-avatar"></div>
+            <span class="player-name">{{ j.nombre }}</span>
+            <span class="player-score">{{ j.puntaje }} pts</span>
+          </div>
+          {% endfor %} {% if not jugadores %}
+          <p class="text-muted" style="text-align: center; padding: 30px; font-style: italic">
+            Esperando a que los jugadores se conecten...
+          </p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div id="results-container" class="card" style="display: none; flex: 1; min-width: 300px">
+        <h3 class="neon-text-pink" style="
+              margin-bottom: 20px;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            ">
+          <span class="material-icons-outlined">analytics</span>
+          Resultados de la Pregunta
+        </h3>
+        <div id="results-content"></div>
+      </div>
+    </div>
+
+    <div class="host-controls" id="controls-waiting">
+      <button class="btn btn-start" onclick="iniciarJuego()">
+        <span class="material-icons-outlined" style="font-size: 1.3rem">rocket_launch</span>
+        INICIAR JUEGO
+      </button>
+    </div>
+
+    <div class="host-controls" id="controls-playing" style="display: none">
+      <button class="btn btn-secondary" onclick="mostrarResultado()">
+        <span class="material-icons-outlined">bar_chart</span>
+        Ver Resultados
+      </button>
+      <button class="btn btn-primary" onclick="siguientePregunta()">
+        Siguiente Pregunta
+        <span class="material-icons-outlined">arrow_forward</span>
+      </button>
+    </div>
+
+    <div class="host-controls" id="controls-finished" style="display: none">
+      <button class="btn btn-primary" onclick="window.location.reload()">
+        <span class="material-icons-outlined">replay</span>
+        Jugar de Nuevo (Mismo PIN)
+      </button>
+      <a href="{{ url_for('index') }}" class="btn btn-secondary">
+        <span class="material-icons-outlined">home</span>
+        Volver al Inicio
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Variables globales
+    const pin = "{{ pin }}";
+    let estadoActual = "esperando";
+
+    // Iniciar el polling para actualizar el estado cada 3 segundos
+    setInterval(actualizarEstado, 3000);
+
+    // --- FUNCIÓN 1: Actualizar el estado del juego y la lista de jugadores ---
+    function actualizarEstado() {
+      fetch(`/host/${pin}/estado`)
+        .then((response) => response.json())
+        .then((data) => {
+          // 1. Actualizar contador de jugadores
+          // El uso de 'document.getElementById' aquí es lo que podía fallar si se borraba el elemento en el HTML.
+          const playerCountEl = document.getElementById("player-count");
+          if (playerCountEl) playerCountEl.textContent = data.total_jugadores;
+
+          // 2. Actualizar lista de jugadores
+          const playersList = document.getElementById("players-list");
+          if (playersList) {
+            if (data.jugadores && data.jugadores.length > 0) {
+              playersList.innerHTML = data.jugadores
+                .map(
+                  (j) => `
+                                <div class="player-item animate-fade-in">
+                                    <div class="player-avatar"></div>
+                                    <span class="player-name">${j.nombre}</span>
+                                    <span class="player-score">${j.puntaje} pts</span>
+                                </div>
+                            `
+                )
+                .join("");
+            } else {
+              playersList.innerHTML =
+                '<p class="text-muted" style="text-align: center; padding: 30px; font-style: italic;">Esperando a que los jugadores se conecten...</p>';
+            }
+          }
+
+          // 3. Actualizar número de pregunta actual
+          const currentQuestionEl =
+            document.getElementById("current-question");
+          if (currentQuestionEl)
+            currentQuestionEl.textContent = data.pregunta_actual + 1;
+
+          // 4. Actualizar texto de estado y controles
+          const statusText = document.getElementById("status-text");
+          if (!statusText) return; // Protección por si no existe
+
+          if (data.estado === "esperando") {
+            statusText.textContent = "Esperando jugadores...";
+          } else if (data.estado === "jugando") {
+            statusText.textContent = `En curso: Pregunta ${data.pregunta_actual + 1
+              } - Quedan ${data.tiempo_restante}s`;
+            // Asegurar que se ven los controles correctos
+            document.getElementById("controls-waiting").style.display =
+              "none";
+            document.getElementById("controls-playing").style.display =
+              "flex";
+          } else if (data.estado === "mostrando_resultado") {
+            statusText.textContent =
+              "Mostrando resultados a los jugadores...";
+          } else if (data.estado === "finalizado") {
+            statusText.textContent = "¡Juego terminado!";
+            document.getElementById("controls-playing").style.display =
+              "none";
+            document.getElementById("controls-finished").style.display =
+              "flex";
+          }
+        })
+        .catch((err) => console.error("Error en polling:", err));
+    }
+
+    // --- FUNCIÓN 2: Iniciar el juego (Botón "INICIAR JUEGO") ---
+    function iniciarJuego() {
+      // Desactivar botón para evitar doble clic
+      const btn = document.querySelector("#controls-waiting .btn-start");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="material-icons-outlined animate-spin">sync</span> Iniciando...';
+      }
+
+      fetch(`/host/${pin}/iniciar`, { method: "POST" })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("controls-waiting").style.display =
+              "none";
+            document.getElementById("controls-playing").style.display =
+              "flex";
+            document.getElementById("status-text").textContent =
+              "Iniciando la primera pregunta...";
+            actualizarEstado(); // Actualizar inmediatamente
+          } else {
+            alert("Error al iniciar: " + (data.error || "Desconocido"));
+            if (btn) {
+              btn.disabled = false;
+              btn.innerHTML =
+                '<span class="material-icons-outlined">rocket_launch</span> INICIAR JUEGO';
+            }
+          }
+        })
+        .catch((err) => {
+          alert("Error de conexión al iniciar el juego");
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML =
+              '<span class="material-icons-outlined">rocket_launch</span> INICIAR JUEGO';
+          }
+        });
+    }
+
+    // --- FUNCIÓN 3: Mostrar resultados (Botón "Ver Resultados") ---
+    function mostrarResultado() {
+      fetch(`/host/${pin}/mostrar-resultado`, { method: "POST" })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            const container = document.getElementById("results-container");
+            const content = document.getElementById("results-content");
+
+            const stats = data.estadisticas;
+            const colors = ["#ff073a", "#00f0ff", "#faff00", "#39ff14"]; // Colores neón
+
+            let html = `
+                            <div class="results-summary text-center">
+                                <span class="neon-text-green" style="font-size: 1.5rem; margin-right: 20px;">Is correctas: ${stats.correctas} ✅</span>
+                                <span class="neon-text-red" style="font-size: 1.5rem;">Incorrectas: ${stats.incorrectas} ❌</span>
+                                <br>
+                                <small class="text-muted" style="display: block; margin-top: 10px;">(${stats.porcentaje_acierto}% de acierto global)</small>
+                            </div>
+                            <h4 style="margin: 25px 0 15px; font-size: 1.1rem;" class="text-muted">Detalle de respuestas:</h4>
+                        `;
+
+            let i = 0;
+            for (const [id, opcion] of Object.entries(stats.por_opcion)) {
+              const color = colors[i % 4];
+              // Calcular porcentaje para el ancho de la barra
+              const percentage =
+                stats.total_respuestas > 0
+                  ? (opcion.cantidad / stats.total_respuestas) * 100
+                  : 0;
+              // Asegurar un ancho mínimo visible (ej. 10%) si hay al menos 1 voto
+              const width =
+                opcion.cantidad > 0 ? Math.max(percentage, 10) : 0;
+
+              html += `
+                                <div class="results-bar animate-fade-in" style="background: ${color}; width: ${width}%; ${width === 0 ? "padding: 0;" : ""
+                }">
+                                    ${width > 0
+                  ? `
+                                    <span style="flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 10px;">
+                                        ${opcion.texto}
+                                    </span>
+                                    <span>
+                                        <strong style="font-size: 1.2rem;">${opcion.cantidad
+                  }</strong>
+                                        ${opcion.es_correcta ? " ✅" : ""}
+                                    </span>
+                                    `
+                  : ""
+                }
+                                </div>
+                                ${width === 0 && opcion.es_correcta
+                  ? `<div style="color: ${color}; font-size: 0.9rem; margin-bottom: 10px;">➥ ${opcion.texto} (Correcta, 0 votos)</div>`
+                  : ""
+                }
+                            `;
+              i++;
+            }
+
+            html += `<h4 class="neon-text-yellow" style="margin-top: 30px; display: flex; align-items: center; gap: 10px;">🏆 Top 5 del Ranking:</h4>`;
+            data.ranking.forEach((j, idx) => {
+              // Colores para los primeros 3 lugares
+              let rankColor = "#888";
+              let rankIcon = "";
+              if (idx === 0) {
+                rankColor = "#faff00";
+                rankIcon = "🥇";
+              } else if (idx === 1) {
+                rankColor = "#e0e0e0";
+                rankIcon = "🥈";
+              } else if (idx === 2) {
+                rankColor = "#cd7f32";
+                rankIcon = "🥉";
+              }
+
+              html += `
+                                <div class="player-item animate-fade-in" style="border-left-color: ${rankColor};">
+                                    <span class="rank-number" style="color: ${rankColor}">${rankIcon || idx + 1
+                }</span>
+                                    <span class="player-name">${j.nombre}</span>
+                                    <span class="player-score" style="color: ${rankColor}">${j.puntaje
+                } pts</span>
+                                </div>
+                            `;
+            });
+
+            content.innerHTML = html;
+            container.style.display = "block";
+            container.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        })
+        .catch((err) => console.error("Error mostrando resultados:", err));
+    }
+
+    // --- FUNCIÓN 4: Pasar a la siguiente pregunta (Botón "Siguiente") ---
+    function siguientePregunta() {
+      // Ocultar resultados anteriores
+      document.getElementById("results-container").style.display = "none";
+      const btn = document.querySelector("#controls-playing .btn-primary");
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML =
+          '<span class="material-icons-outlined animate-spin">sync</span> Cargando...';
+      }
+
+      fetch(`/host/${pin}/siguiente`, { method: "POST" })
+        .then((response) => response.json())
+        .then((data) => {
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML =
+              'Siguiente Pregunta <span class="material-icons-outlined">arrow_forward</span>';
+          }
+
+          if (data.success) {
+            if (data.finalizado) {
+              document.getElementById("controls-playing").style.display =
+                "none";
+              document.getElementById("controls-finished").style.display =
+                "flex";
+              document.getElementById("status-text").textContent =
+                "🏆 ¡Juego terminado!";
+            } else {
+              document.getElementById("current-question").textContent =
+                data.pregunta_numero;
+              document.getElementById(
+                "status-text"
+              ).textContent = `Preparando Pregunta ${data.pregunta_numero}...`;
+              actualizarEstado();
+            }
+          }
+        })
+        .catch((err) => {
+          alert("Error al pasar a la siguiente pregunta");
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML =
+              'Siguiente Pregunta <span class="material-icons-outlined">arrow_forward</span>';
+          }
+        });
+    }
+
+    // CSS rápido para la animación de carga en los botones
+    const style = document.createElement("style");
+    style.innerHTML = `.animate-spin { animation: spin 1s linear infinite; } @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`;
+    document.head.appendChild(style);
+  </script>
+</body>
+
+</html>
