@@ -1,5 +1,7 @@
 # 💎 GAME LIVE — ¡Crea y Juega Cuestionarios Interactivos!
-
+  <picture>
+    <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+  </picture>
 ¡Bienvenido a **GAME LIVE**! Esta es una aplicación web divertida y visualmente impactante, perfecta para crear y dirigir tus propios cuestionarios interactivos, ¡al estilo de los famosos juegos de preguntas en vivo!
 
 Imagina un profesor lanzando preguntas en una pantalla grande (el "Host") mientras sus estudiantes responden emocionados desde sus teléfonos (los "Jugadores"). Eso es GAME LIVE: una experiencia dinámica con una estética neón muy llamativa.
