@@ -261,4 +261,52 @@ game-live/                 <-- Carpeta principal del proyecto
 **Desarrollado por:** JaviTMX
 **Versión:** 1.0.0
 **Licencia:** Free-Code
-````http://googleusercontent.com/image_generation_content/6
+````http://googleusercontent.com/image_generation_content/6````
+<picture>
+  <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" alt="divider">
+</picture>
+
+# 🌐 Jugar Online con Amigos (Usando ngrok)
+
+Por defecto, cuando ejecutas la aplicación (`python app.py`), solo funciona en **tu propia computadora** (eso significa `localhost` o `127.0.0.1`).
+
+**¿Pero qué pasa si quieres que tus amigos se unan desde sus casas con sus celulares?**
+
+Para eso usamos una herramienta llamada **ngrok**. Ngrok crea un "túnel" seguro desde tu computadora hacia internet, dándote una dirección web pública temporal que puedes compartir con quien quieras.
+
+### Pasos para configurar ngrok
+
+#### 1. Descarga y Configura ngrok
+Si aún no lo tienes:
+* Ve a [https://ngrok.com/download](https://ngrok.com/download) y descárgalo para tu sistema operativo.
+* Regístrate gratis en su web.
+* Sigue las instrucciones que te dan para conectar tu cuenta (usualmente es un comando que copias y pegas en la terminal una sola vez, algo como `ngrok config add-authtoken TU_TOKEN`).
+
+#### 2. Inicia tu Aplicación GAME LIVE (Terminal 1)
+Como siempre, abre tu primera terminal, activa el entorno virtual y ejecuta la app:
+```bash
+python app.py
+```
+### 3. Inicia el Túnel ngrok (Terminal 2)
+Sin cerrar la primera terminal, abre una SEGUNDA ventana de terminal (Git Bash, CMD o PowerShell).
+En esta nueva ventana, escribe el siguiente comando para decirle a ngrok que exponga el puerto 5000 (donde corre tu Flask):
+
+```bash
+ngrok http 5000
+```
+### 4.¡Obtén tu Enlace Público!
+Verás que la terminal de ngrok cambia y te muestra una pantalla con varios datos. Busca la línea que dice Forwarding.
+
+Verás una dirección web que termina en .ngrok-free.app. ¡Ese es tu enlace mágico!
+
+Se verá algo parecido a esto (el tuyo será diferente): Forwarding https://1a2b-3c4d-5e6f.ngrok-free.app -> http://localhost:5000
+
+👉 Copia la dirección HTTPS completa (ej. https://1a2b-3c4d-5e6f.ngrok-free.app).
+
+### 5. Comparte y Juega
+* Tú (como Host): Usa esa dirección HTTPS en tu navegador para entrar, iniciar sesión y lanzar la partida.
+* Tus Amigos (Jugadores): Envíales esa dirección HTTPS por WhatsApp, Discord, etc. Ellos deberán abrirla en el navegador de sus celulares para ver la pantalla de inicio e ingresar el PIN.
+
+## ⚠️ Importante sobre ngrok:
+* No cierres la terminal de ngrok mientras estén jugando, o el enlace dejará de funcionar.
+* En la versión gratuita, el enlace cambia cada vez que cierras y vuelves a abrir ngrok. Asegúrate de enviar siempre el enlace nuevo antes de empezar a jugar.
